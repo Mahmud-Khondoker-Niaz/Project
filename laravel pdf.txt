@@ -1,0 +1,35 @@
+1. Create a route as like " Route::get('/userpdf/{id}', 'UsersController@userpdf');
+"
+2. Create a menthod in controller as like "    public function userpdf($id) {
+
+        if(Auth::User()->usertype!="Admin"){
+
+            \Session::flash('flash_message', trans('words.access_denied'));
+
+            return redirect('admin/dashboard');
+
+        }
+        $decrypted_id = Crypt::decryptString($id);
+
+        $user = User::findOrFail($decrypted_id);
+
+
+        // dd($user);
+
+        $pdf=PDF::loadview('admin.pages.userspdf',compact('user'))->setOptions(['defaultFont' => 'sans-serif']);
+        return $pdf->download('users.pdf');"
+
+3. create a blade file
+4. config->app.php->  'PDF' => Barryvdh\DomPDF\Facade::class, Barryvdh\DomPDF\ServiceProvider::class,
+5. dompdf install in composer and have to update composer
+source link :
+
+https://www.youtube.com/watch?v=sdPhUIcDMMQ
+https://laracasts.com/discuss/channels/laravel/dompdf-not-loading-data-to-view
+https://github.com/barryvdh/laravel-dompdf/issues/724
+// For data download
+setOptions(['defaultFont' => 'sans-serif'])
+// For image showing 
+'isRemoteEnabled' => true
+// for data passing 
+have to clear cache from php artisan
